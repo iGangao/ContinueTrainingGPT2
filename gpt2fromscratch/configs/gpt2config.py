@@ -1,17 +1,36 @@
+from dataclasses import dataclass
 
-class GPTConfig():
-    def __init__(self, vocab_size=100, n_embd=100, n_positions=100, n_layer=3, n_head=2, n_ctx=2000,
-                 embd_pdrop=0.1, attn_pdrop=0.1, resid_pdrop=0.1, layer_norm_epsilon=1e-5,
-                 afn='gelu_new',
-                 **kwargs):
-        self.vocab_size = vocab_size
-        self.n_embd = n_embd
-        self.n_positions = n_positions
-        self.n_layer = n_layer
-        self.n_head = n_head
-        self.n_ctx = n_ctx
-        self.embd_pdrop, self.attn_pdrop, self.resid_pdrop = embd_pdrop, attn_pdrop, resid_pdrop
-        self.layer_norm_epsilon = layer_norm_epsilon
-        self.afn = afn
-        for k, v in kwargs.items():
-            setattr(self, k, v)
+# Configuration data class for GPT-2 model.
+@dataclass
+class GPT2Config:
+    # Vocabulary size for tokenization.
+    vocab_size: int = 50257
+
+    # Maximum number of positions in a sequence.
+    n_positions: int = 1024
+
+    # Dimensionality of the causal mask (usually same as n_positions)
+    n_ctx: int = 1024
+
+    # Dimensionality of the embedding vector for each token.
+    d_model: int = 768
+
+    # Number of transformer layers in the model.
+    n_layer: int = 12
+
+    # Number of attention heads in each transformer layer.
+    n_head: int = 12
+
+    # Epsilon value for layer normalization.
+    layer_norm_epsilon: float = 1e-5
+
+    # Range for weight initialization.
+    initializer_range: float = 0.02
+
+    # Use GQA with RoPE
+    use_gqa: bool = False
+
+    # Number of groups for GQA
+    num_groups: int = 2
+
+
