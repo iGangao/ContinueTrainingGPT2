@@ -50,19 +50,18 @@ class GPT2Attention(nn.Module):
 
         attn_weights = scores
         query_length, key_length = q.size(-2), k.size(-2)
+
         causal_mask = self.bias[:, :, key_length - query_length : key_length, :key_length]
         mask_value = torch.finfo(attn_weights.dtype).min
         # Need to be a tensor, otherwise we get error: `RuntimeError: expected scalar type float but found double`.
         # Need to be on the same device, otherwise `RuntimeError: ..., x and y to be on the same device`
         mask_value = torch.full([], mask_value, dtype=attn_weights.dtype).to(attn_weights.device)
-        
         attn_weights = torch.where(causal_mask, attn_weights.to(attn_weights.dtype), mask_value)
         
         if attn_mask is not None:
             attn_weights = attn_weights + attn_mask
 
         attn_weights = self.softmax(attn_weights)
-        
         # Downcast (if necessary) back to V's dtype (if in mixed-precision) -- No-Op otherwise
         attn_weights = attn_weights.type(v.dtype)
         attn_weights = self.dropout(attn_weights) # 
